@@ -1,7 +1,8 @@
 import React, { Component } from "React";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
-
+import { Link, hashHistory } from "react-router";
+import query from "../queries/fetchSongs";
 class SongCreate extends Component {
   constructor(props) {
     super(props);
@@ -10,17 +11,25 @@ class SongCreate extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    console.log("props: ", this.props);
-    this.props.mutate({
-      variables: {
-        title: this.state.title
-      }
-    });
+
+    this.props
+      .mutate({
+        variables: {
+          title: this.state.title
+        },
+        refetchQueries: [{ query }]
+      })
+      .then(() => {
+        console.log("hi");
+
+        hashHistory.push("/");
+      });
   }
 
   render() {
     return (
       <div>
+        <Link to="/">Back</Link>
         <h3>Create a song</h3>
         <form onSubmit={this.onSubmit.bind(this)}>
           <label>Song Title</label>
